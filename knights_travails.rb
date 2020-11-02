@@ -4,13 +4,14 @@ require 'pry'
 
 # knight class for movable chess piece
 class Knight
-  attr_accessor :location, :parent_location
+  attr_accessor :location, :parent_location, :depth
 
   def initialize(current_location, parent = current_location, depth = 0)
     @location = current_location
     @parent_location = parent
     # add a depth attribute/counter ?
-    @depth = depth 
+    @depth = depth
+    
   end
 end
 
@@ -51,10 +52,10 @@ class Board
     next_move.select { |n| (0..7).include?(n[0]) && (0..7).include?(n[1]) }
   end
 
-  def create_children(current_location, move_to_coordinates)
+  def create_children(current_location, move_to_coordinates, depth)
     # move to coordinates = array of coordinate arrays
     move_to_coordinates.each do |coordinates|
-      knights << Knight.new(coordinates, current_location)
+      knights << Knight.new(coordinates, current_location, depth)
     end
   end
 
@@ -102,26 +103,64 @@ ending_point = text_coordinates.map(&:to_i)
 
 # starting_coordinates =  
 board = Board.new(starting_point, ending_point)
-root = Knight.new(starting_point, 'start')
-move_to_options = board.moves_from_current_point(root.location)
-board.create_children(root.location, move_to_options) #binding in here?
+board.knights << root = Knight.new(starting_point, 'start')
+
+# everything below will go into method loop?
+depth_counter = 0
+
+# def check_next_generation
+
+  board.knights.each do |knight| #make the next generation of children
+    next if knight.depth != depth_counter
+
+    next_possibilities = board.moves_from_current_point(knight.location)
+   
+    # binding.pry
+    # next_possibilities.each do |move|
+    #   board.create_children(knight.location, move, knight.depth + 1)
+    # end
+    board.create_children(knight.location, next_possibilities, knight.depth + 1)
+  end
+
+  # check the next gen of knights that was just generated
+  board.knights.each do |knight|
+    next if knight.depth != depth_counter + 1
+
+    if knight.location == ending_point
+      # binding.pry
+      p knight.parent_location#, knight.depth
+      p knight.depth #explicit return to feed up the chain?
+      return p "#{knight.depth} moves required to get to endpoint"
+    else
+      false
+    end
+  end
+# end
+
 binding.pry
 
-until move_to_options.includes?(ending_point) 
-  moves_from_current_point()
-end
 
-until board.end_point_reached?(move_to_options, ending_point)
-  move_to_options.each do |move|
-    create_children(move, board.moves_from_current_point(move))
-  end
-  move_to_options << board.moves_from_current_point
+# move_to_options = board.moves_from_current_point(root.location)
+# board.create_children(root.location, move_to_options) #binding in here?
+# binding.pry
+
+
+
+# until move_to_options.includes?(ending_point) 
+#   moves_from_current_point()
+# end
+
+# until board.end_point_reached?(move_to_options, ending_point)
+#   move_to_options.each do |move|
+#     create_children(move, board.moves_from_current_point(move))
+#   end
+#   move_to_options << board.moves_from_current_point
 
   # next_moves = board.moves_from_current_point(move_to_options)
   # next_moves.each do |move|
   #   create_children(move)
 
-  board.end_point_knight(knights)
+  # board.end_point_knight(knights)
 
 binding.pry
 #BFS
