@@ -1,9 +1,12 @@
 # frozen_string_literal: false
 
+require 'pry'
+
 # knight class for movable chess piece
 class Knight
-  def initialize
-    #
+  def initialize(current_location, parent = current_location)
+    @location = current_location
+    @parent_location = parent
   end
 end
 
@@ -16,7 +19,7 @@ class Board
   end
 
   def moves_from_current_point(current_point)
-    @next_move = Array.new
+    @next_move = []
     x = current_point[0]
     y = current_point[1]
     next_move << [x + 1, y + 2]
@@ -28,6 +31,25 @@ class Board
     next_move << [x - 2, y + 1]
     next_move << [x - 2, y - 1]
     next_move.select { |n| (0..7).include?(n[0]) && (0..7).include?(n[1]) }
+  end
+
+  def build_tree(next_move_array)
+    # next_move_array.each { |move| p moves_from_current_point(move) }
+    #   # create array for each path ?
+    next_move_array.each do |move|
+      following_moves = []
+      following_moves[0] = move
+      following_moves[1] = moves_from_current_point(move)
+      # how to store parent node?
+      p following_moves
+    end
+  end
+
+  def full_tree(current_point)
+    moves = moves_from_current_point(current_point)
+    15.times do
+      build_tree(build_tree(moves))
+    end
   end
 end
 
