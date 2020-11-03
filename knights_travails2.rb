@@ -79,12 +79,14 @@ class Board
   end
 
   def gen_and_check(knight_array = knights)
-    next_knight = knight_array[0]
+    next_knight = knight_array[0] # change to be first with the lowest depth???
+    successful_child = []
     next_knight.children_array.each do |child| # adds next gen of Knight's offspring to Knight queue
-      create_children(child)
-      return child if successful_child?(child)
-      #check if satisfies?
+      return successful_child = child if successful_child?(child)
+      create_children(child) #adding next generation of this child to the queue
     end
+    return successful_child unless successful_child.empty?
+    # return knight_array.select { |k| k.location.any? { |n| n == ending_coordinates}}
     knight_array.shift
     optimal_path << gen_and_check(knight_array)
   end
@@ -135,10 +137,12 @@ return 'Start and end point are the same. no moves required' if starting_point =
 # if board.moves_from_current_point(starting_point) # return only 1 move required
 
 board.knights << root = Knight.new(starting_point, board.moves_from_current_point(starting_point))
+
 # ~recurse
+board.optimal_path << starting_point
 board.optimal_path << board.gen_and_check(board.knights)
 
-p "Our brave Knight can accomplish the journey in #{board.optimal_path.size} moves."
+p "Our brave Knight can accomplish the journey in #{board.optimal_path.size - 1} moves."
 p "The path is as follows: #{board.optimal_path}."
 
 # gen and check placeholder for easy read
