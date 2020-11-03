@@ -27,13 +27,14 @@ end
 # class for 8x8 grid chess board
 class Board
   attr_reader :next_move, :ending_coordinates
-  attr_accessor :knights
+  attr_accessor :knights, :optimal_path
 
   def initialize(starting_coordinates, ending_coordinates)
     @board_array = Array.new(8, [0, 1, 2, 3, 4, 5, 6, 7])
     @start = starting_coordinates
-    @end = ending_coordinates
+    @ending_coordinates = ending_coordinates
     @knights = []
+    @optimal_path = []
   end
 
   def moves_from_current_point(current_point)
@@ -77,6 +78,17 @@ class Board
     knight_coord == ending_coordinates
   end
 
+  def gen_and_check(knight_array = knights)
+    next_knight = knight_array[0]
+    next_knight.children_array.each do |child| # adds next gen of Knight's offspring to Knight queue
+      create_children(child)
+      return child if successful_child?(child)
+      #check if satisfies?
+    end
+    knight_array.shift
+    optimal_path << gen_and_check(knight_array)
+  end
+
   # def matches_endpoint(move_to_coordinates, ending_coordinates)
   #   move_to_coordinates.select { |coordinates| coordinates == ending_coordinates }
   # end
@@ -117,23 +129,23 @@ ending_point = text_coordinates.map(&:to_i)
 
 # starting_coordinates =  
 board = Board.new(starting_point, ending_point)
+return 'Start and end point are the same. no moves required' if starting_point == ending_point
 
-board.knights << root = Knight.new(starting_point, moves_from_current_point(starting_point))
+#*******
+# if board.moves_from_current_point(starting_point) # return only 1 move required
+
+board.knights << root = Knight.new(starting_point, board.moves_from_current_point(starting_point))
 # ~recurse
-//def gen_and_check(knight_array = knights)
-  next_knight = board.knights[0]
-  next_knight.children_array.each do |child| # adds next gen of Knight's offspring to Knight queue
-    create_children(child)
-    return child if successful_child?
-    #check if satisfies?
-  end
-  knight_array.shift
-  gen_and_check(knight_array)
-end
+board.optimal_path << board.gen_and_check(board.knights)
+
+p "Our brave Knight can accomplish the journey in #{board.optimal_path.size} moves."
+p "The path is as follows: #{board.optimal_path}."
+
+# gen and check placeholder for easy read
 
 # need each loop to create for each point board.create_children(next_knight.children_array)  #need depth here to now how many new children to check/add? or doesn't matter bc just keep following the queue until answer?
 #check if satisfies, repeat
-________________________________________________________________________________
+# ________________________________________________________________________________
 # board.knights << root = Knight.new(starting_point, 'start')
 
 # # everything below will go into method loop?
@@ -193,7 +205,7 @@ ________________________________________________________________________________
 
   # board.end_point_knight(knights)
 
-binding.pry
+# binding.pry
 #BFS
 # queue = []
 # queue << root.location
