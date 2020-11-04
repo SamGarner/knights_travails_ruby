@@ -4,7 +4,7 @@ require 'pry'
 
 # knight class for movable chess piece
 class Knight
-  attr_accessor :location, :children_array, :depth
+  attr_accessor :location, :children_array, :parent
 
   def initialize(current_location, children_array, parent = 'Origin')
     @location = current_location
@@ -26,7 +26,7 @@ end
 # class for 8x8 grid chess board
 class Board
   attr_reader :next_move, :ending_coordinates
-  attr_accessor :knights, :optimal_path
+  attr_accessor :knights, :optimal_path, :traversal_path
 
   def initialize(starting_coordinates, ending_coordinates)
     @board_array = Array.new(8, [0, 1, 2, 3, 4, 5, 6, 7])
@@ -34,6 +34,7 @@ class Board
     @ending_coordinates = ending_coordinates
     @knights = []
     @optimal_path = []
+    @traversal_path = []
   end
 
   def moves_from_current_point(current_point)
@@ -79,20 +80,66 @@ class Board
 
   def gen_and_check(knight_array = knights)
     next_knight = knight_array[0] # change to be first with the lowest depth???
+                  # p 'next knight:'
+                  # p next_knight
+                  # puts
     successful_child = []
     next_knight.children_array.each do |child| # adds next gen of Knight's offspring to Knight queue
       successful_child = child if successful_child?(child)
+                  # p 'current child and successful_child array:'
+                  # p child 
+                  # p successful_child
+                  # puts
       create_children(child, next_knight) #adding next generation of this child to the queue
+      break if successful_child?(child)
     end
+                  # p 'post child loop, pre return knight array:'
+                  # p knight_array
+                  # puts
     # unless successful_child.empty?
     #   optimal_path << successful_child
-    return optimal_path << next_knight unless successful_child.empty?
-
-    knight_array.shift
+    
+    # return optimal_path << next_knight unless successful_child.empty?
+    
+    # return next_knight unless successful_child.empty?
+    return knights.last unless successful_child.empty?
+                  # p 'post child loop knight array:'
+                  # p knight_array
+                  # puts
+                  knight_array.shift
+                  # p 'post shift knight_array:'
+                  # # binding.pry
+                  # p knight_array
+                  # puts  
     [optimal_path] << gen_and_check(knight_array) # BRACKETS, CAN'T FLATTEN RECURSIVE ARRAY
     # return successful_child unless successful_child.empty?
     # knight_array.shift
     # optimal_path << gen_and_check(knight_array)
+  end
+
+  def unravel_optimal_knight(knight)
+    return if knight.parent == 'Origin'
+    traversal_path << knight.location
+    unravel_optimal_knight(knight.parent)
+
+    # traversal_path << knight.parent.location
+  end
+
+# *****************************************************************************************************************
+  # def unwind_optimal_knight(knight)
+  #   # return if knight.parent == 'Origin'
+  #   unravel_optimal_knight(knight.parent) unless knight.parent == 'Origin'
+  #   traversal_path << knight.location
+  # end
+
+  def unwind_optimal_knight(knight)
+    # return if knight.parent == 'Origin'
+     # return knight.location if knight.parent.parent == 'Origin'
+    traversal_path << unwind_optimal_knight(knight.parent) unless knight.parent == 'Origin'
+    # p knight
+    # p traversal_path
+    return knight.location
+    # traversal_path << knight.location
   end
 
   # def matches_endpoint(move_to_coordinates, ending_coordinates)
@@ -144,21 +191,43 @@ board.knights << root = Knight.new(starting_point, board.moves_from_current_poin
 
 # ~recurse
 # board.optimal_path << board.knights[0] # reverse to get order right
-board.optimal_path = board.gen_and_check(board.knights).flatten # can flatten once make non-recursive with bracket notation above
 
-board.optimal_path.map! { |knight| knight.location }
-# binding.pry
-board.optimal_path << board.ending_coordinates
-# binding.pry
+#TEST
+board.optimal_path = board.gen_and_check(board.knights).flatten
+board.unwind_optimal_knight(board.optimal_path[0])
+board.traversal_path.push(ending_point)
+moves_required = board.traversal_path.size - 1
 
-moves_required = board.optimal_path.size - 1
-# p "Our brave Knight can accomplish the journey in #{board.optimal_path.size - 1} moves."
 if moves_required == 1 
   p "Our brave Knight can accomplish the journey in #{moves_required} move."
 else
   p "Our brave Knight can accomplish the journey in #{moves_required} moves."
 end
-p "The path is as follows: #{board.optimal_path}."
+p "The path is as follows: #{board.traversal_path}."
+
+# binding.pry 
+
+# #NonTest
+# board.optimal_path = board.gen_and_check(board.knights).flatten # can flatten once make non-recursive with bracket notation above
+# p 'just before map! board.optimal_path:'
+# p board.optimal_path
+# board.optimal_path.map! { |knight| knight.location }
+# # binding.pry
+# board.optimal_path.unshift(starting_point) << board.ending_coordinates
+# # binding.pry
+
+# moves_required = board.optimal_path.size - 1
+# # p "Our brave Knight can accomplish the journey in #{board.optimal_path.size - 1} moves."
+# if moves_required == 1 
+#   p "Our brave Knight can accomplish the journey in #{moves_required} move."
+# else
+#   p "Our brave Knight can accomplish the journey in #{moves_required} moves."
+# end
+# p "The path is as follows: #{board.optimal_path}."
+
+
+
+
 
 # gen and check placeholder for easy read
 
