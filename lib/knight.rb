@@ -2,7 +2,8 @@
 
 # knight class for movable chess piece
 class Knight
-  attr_accessor :location, :children_array, :parent
+  attr_reader :location, :children_array, :parent
+  # attr_accessor 
 
   def initialize(current_location, children_array, parent = 'Origin')
     @location = current_location

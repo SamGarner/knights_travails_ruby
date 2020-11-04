@@ -2,12 +2,13 @@
 
 # class for 8x8 grid chess board
 class Board
+
   attr_reader :next_move, :ending_coordinates, :moves_required
   attr_accessor :knights, :optimal_path, :traversal_path
 
-  def initialize(starting_coordinates, ending_coordinates)
+  def initialize(ending_coordinates)
     @board_array = Array.new(8, [0, 1, 2, 3, 4, 5, 6, 7])
-    @start = starting_coordinates
+    # @start = starting_coordinates
     @ending_coordinates = ending_coordinates
     @knights = []
     @optimal_path = []
@@ -53,19 +54,13 @@ class Board
     [optimal_path] << gen_and_check(knight_array) # BRACKETS, CAN'T FLATTEN RECURSIVE ARRAY
   end
 
-  # def unravel_optimal_knight(knight)
-  #   return if knight.parent == 'Origin'
-  #   traversal_path << knight.location
-  #   unravel_optimal_knight(knight.parent)
-  # end
-
   def unwind_optimal_knight(knight)
     traversal_path << unwind_optimal_knight(knight.parent) unless knight.parent == 'Origin'
-    return knight.location
+    knight.location
   end
 
   def get_number_of_moves(starting_point, ending_point)
-    knights << root = Knight.new(starting_point, moves_from_current_point(starting_point))
+    knights << Knight.new(starting_point, moves_from_current_point(starting_point))
 
     optimal_path = gen_and_check(knights).flatten
     unwind_optimal_knight(optimal_path[0])
@@ -75,10 +70,10 @@ class Board
 
   def print_results(moves_required = self.moves_required, traversal_path = self.traversal_path)
     if moves_required == 1 
-      p "Our brave Knight can accomplish the journey in #{moves_required} move."
+      puts "Our brave Knight can accomplish the journey in #{moves_required} move."
     else
-      p "Our brave Knight can accomplish the journey in #{moves_required} moves."
+      puts "Our brave Knight can accomplish the journey in #{moves_required} moves."
     end
-    p "The path is as follows: #{traversal_path}."
+    puts "The path is as follows: #{traversal_path}."
   end  
 end
