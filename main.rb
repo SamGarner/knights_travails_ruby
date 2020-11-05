@@ -10,7 +10,7 @@ def knight_moves(start_point, end_point)
   return print_instructions unless valid_user_input?(start_point) && valid_user_input?(end_point)
 
   board = Board.new(end_point)
-  return 'Start and end point are the same. no moves required' if start_point == end_point
+  return 'Start and end point are the same. No moves required!' if start_point == end_point
 
   board.get_number_of_moves(start_point, end_point)
   board.print_results
