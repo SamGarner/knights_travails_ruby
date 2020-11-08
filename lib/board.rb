@@ -54,8 +54,8 @@ class Board
     [optimal_path] << gen_and_check(knight_array) # BRACKETS, CAN'T FLATTEN RECURSIVE ARRAY
   end
 
-  def unwind_optimal_knight(knight)
-    traversal_path << unwind_optimal_knight(knight.parent) unless knight.parent == 'Origin'
+  def fetch_knight_traversal_path(knight)
+    traversal_path << fetch_knight_traversal_path(knight.parent) unless knight.parent == 'Origin'
     knight.location # work up the parental chain to get the coordinates of required moves
   end
 
@@ -63,17 +63,17 @@ class Board
     knights << Knight.new(starting_point, moves_from_current_point(starting_point))
 
     optimal_path = gen_and_check(knights).flatten
-    unwind_optimal_knight(optimal_path[0]) # gets the coordinates of the traversal moves by following parent nodes
+    fetch_knight_traversal_path(optimal_path[0]) # gets the coordinates of the traversal moves by following parent nodes
     traversal_path.push(ending_point)
     @moves_required = traversal_path.size - 1
   end
 
   def print_results(moves_required = self.moves_required, traversal_path = self.traversal_path)
-    if moves_required == 1 
+    if moves_required == 1
       puts "Our brave Knight can accomplish the journey in #{moves_required} move."
     else
       puts "Our brave Knight can accomplish the journey in #{moves_required} moves."
     end
     puts "The path is as follows: #{traversal_path}."
-  end  
+  end
 end
