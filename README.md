@@ -2,7 +2,7 @@
 
 In chess, a lone knight can travel to any space on the board, given enough moves.
 
-This program implements a breadth-first search algorithm to determine the shortest path for a knight to travel from specified start and end spaces.
+This program implements a breadth-first search algorithm to determine the shortest path for a knight to travel given specified start and end spaces.
 
 <img src="demo/demo.gif" alt="demo gif" width=auto height="400px"/><br>
 
