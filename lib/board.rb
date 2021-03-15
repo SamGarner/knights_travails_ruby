@@ -95,7 +95,7 @@ class Board
     # puts "The path is as follows: #{traversal_path}."
     puts 'The path is as follows:'
     traversal_path.each do |coordinate|
-      p mapping_hash.key(coordinate).to_s
+      puts mapping_hash.key(coordinate).to_s
     end
   end
 end
