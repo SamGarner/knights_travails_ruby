@@ -22,9 +22,9 @@ require_relative 'lib/board.rb'
                      H5: [3, 7], H6: [2, 7], H7: [1, 7], H8: [0, 7]
                    ]
 
-def knight_moves(start_point, end_point)
-  board = Board.new(end_point)
-  return 'Start and end point are the same. No moves required!' if start_point == end_point
+def knight_moves(start_point, end_point, board)
+  # board = Board.new(end_point)
+  # return 'Start and end point are the same. No moves required!' if start_point == end_point
 
   board.get_number_of_moves(start_point, end_point)
   board.print_results(@mapping_hash)
@@ -62,10 +62,15 @@ def print_input_error
   puts 'Invalid input. Please try again using coordinates between a1 and H7'
 end
 
+display_board = Board.new
+display_board.display_board
 fetch_user_input
 if valid_user_input?(@start_input, @end_input)
+  return puts 'Start and end point are the same. No moves required!' if @start_input == @end_input
+
   map_user_input_to_numerical_coordinates(@start_input, @end_input)
-  knight_moves(@start_coordinate, @end_coordinate)
+  board = Board.new(@end_coordinate)
+  knight_moves(@start_coordinate, @end_coordinate, board)
 else
   print_input_error
 end

@@ -6,7 +6,7 @@ class Board
   attr_reader :ending_coordinates, :moves_required
   attr_accessor :knights, :optimal_path, :traversal_path
 
-  def initialize(ending_coordinates)
+  def initialize(ending_coordinates = [0, 0])
     # @board_array = Array.new(8, [0, 1, 2, 3, 4, 5, 6, 7])
     # @start = starting_coordinates
     @ending_coordinates = ending_coordinates
@@ -66,6 +66,24 @@ class Board
     fetch_knight_traversal_path(optimal_path[0]) # gets the coordinates of the traversal moves by following parent nodes
     traversal_path.push(ending_point)
     @moves_required = traversal_path.size - 1
+  end
+
+  def display_board
+    puts '   | A | B | C | D | E | F | G | H |'
+    puts display_rows
+    puts '   | A | B | C | D | E | F | G | H |'
+  end
+
+  def display_rows
+    text = ''
+    (0..7).each do |n|
+      text << "#{8 - n}  |"
+      8.times do
+        text << ' _ |'
+      end
+      text << " #{8 - n}\n"
+    end
+    text
   end
 
   def print_results(mapping_hash, moves_required = self.moves_required, traversal_path = self.traversal_path)
