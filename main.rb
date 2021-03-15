@@ -62,15 +62,19 @@ def print_input_error
   puts 'Invalid input. Please try again using coordinates between a1 and H7'
 end
 
+def generate_response
+  if @start_input == @end_input
+    puts 'Start and end point are the same. No moves required!'
+  elsif valid_user_input?(@start_input, @end_input)
+    map_user_input_to_numerical_coordinates(@start_input, @end_input)
+    board = Board.new(@end_coordinate)
+    knight_moves(@start_coordinate, @end_coordinate, board)
+  else
+    print_input_error
+  end
+end
+
 display_board = Board.new
 display_board.display_board
 fetch_user_input
-if valid_user_input?(@start_input, @end_input)
-  return puts 'Start and end point are the same. No moves required!' if @start_input == @end_input
-
-  map_user_input_to_numerical_coordinates(@start_input, @end_input)
-  board = Board.new(@end_coordinate)
-  knight_moves(@start_coordinate, @end_coordinate, board)
-else
-  print_input_error
-end
+generate_response
