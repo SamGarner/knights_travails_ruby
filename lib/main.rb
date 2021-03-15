@@ -1,8 +1,8 @@
 # frozen_string_literal: false
 
 # require 'pry'
-require_relative 'lib/knight.rb'
-require_relative 'lib/board.rb'
+require_relative 'knight.rb'
+require_relative 'board.rb'
 
 @mapping_hash = Hash[A1: [7, 0], A2: [6, 0], A3: [5, 0], A4: [4, 0],
                      A5: [3, 0], A6: [2, 0], A7: [1, 0], A8: [0, 0],
