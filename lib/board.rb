@@ -68,12 +68,16 @@ class Board
     @moves_required = traversal_path.size - 1
   end
 
-  def print_results(moves_required = self.moves_required, traversal_path = self.traversal_path)
+  def print_results(mapping_hash, moves_required = self.moves_required, traversal_path = self.traversal_path)
     if moves_required == 1
       puts "Our brave Knight can accomplish the journey in #{moves_required} move."
     else
       puts "Our brave Knight can accomplish the journey in #{moves_required} moves."
     end
-    puts "The path is as follows: #{traversal_path}."
+    # puts "The path is as follows: #{traversal_path}."
+    puts 'The path is as follows:'
+    traversal_path.each do |coordinate|
+      p mapping_hash.key(coordinate).to_s
+    end
   end
 end
