@@ -1,6 +1,6 @@
 # frozen_string_literal: false
 
-require 'pry'
+# require 'pry'
 require_relative 'lib/knight.rb'
 require_relative 'lib/board.rb'
 
